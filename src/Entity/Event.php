@@ -17,66 +17,85 @@ class Event
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private ?string $hour;
 
     /**
-     * @ORM\OneToMany(targetEntity=Day::class, mappedBy="event")
+     * @ORM\Column(type="string", length=255)
      */
-    private $days;
+    private ?string $stage;
 
-    public function __construct()
-    {
-        $this->days = new ArrayCollection();
-    }
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private ?string $image;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Artist::class, inversedBy="event", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private ?Artist $artist;
+
+
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getHour(): ?string
     {
-        return $this->name;
+        return $this->hour;
     }
 
-    public function setName(string $name): self
+    public function setHour(string $hour): self
     {
-        $this->name = $name;
+        $this->hour = $hour;
 
         return $this;
     }
 
-    /**
-     * @return Collection|Day[]
-     */
-    public function getDays(): Collection
+    public function getArtist(): ?Artist
     {
-        return $this->days;
+        return $this->artist;
     }
 
-    public function addDay(Day $day): self
+    public function setArtist(Artist $artist): self
     {
-        if (!$this->days->contains($day)) {
-            $this->days[] = $day;
-            $day->setEvent($this);
+        // set the owning side of the relation if necessary
+        if ($artist->getEvent() !== $this) {
+            $artist->setEvent($this);
         }
+
+        $this->artist = $artist;
 
         return $this;
     }
 
-    public function removeDay(Day $day): self
+    public function getStage(): ?string
     {
-        if ($this->days->removeElement($day)) {
-            // set the owning side to null (unless already changed)
-            if ($day->getEvent() === $this) {
-                $day->setEvent(null);
-            }
-        }
+        return $this->stage;
+    }
+
+    public function setStage(string $stage): self
+    {
+        $this->stage = $stage;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(string $image): self
+    {
+        $this->image = $image;
 
         return $this;
     }

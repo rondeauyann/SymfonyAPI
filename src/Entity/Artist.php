@@ -15,22 +15,27 @@ class Artist
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private ?string $name;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $image;
+    private ?string $image;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $description;
+    private ?string $description;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Event::class, mappedBy="artist", cascade={"persist", "remove"})
+     */
+    private ?Event $event;
 
     public function getId(): ?int
     {
@@ -69,6 +74,18 @@ class Artist
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getEvent(): ?Event
+    {
+        return $this->event;
+    }
+
+    public function setEvent(Event $event): self
+    {
+        $this->event = $event;
 
         return $this;
     }

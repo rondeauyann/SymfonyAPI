@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Artist;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,10 +16,24 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ArtistRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(private ManagerRegistry $registry, private EntityManagerInterface $em)
     {
         parent::__construct($registry, Artist::class);
     }
+
+    public function saveArtist($name, $image, $description)
+    {
+        $newArtist = new Artist();
+
+        $newArtist
+            ->setName($name)
+            ->setImage($image)
+            ->setDescription($description);
+
+        $this->em->persist($newArtist);
+        $this->em->flush();
+    }
+
 
     // /**
     //  * @return Artist[] Returns an array of Artist objects
@@ -47,4 +63,5 @@ class ArtistRepository extends ServiceEntityRepository
         ;
     }
     */
+
 }

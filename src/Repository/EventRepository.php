@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Event;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,9 +15,23 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class EventRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(private ManagerRegistry $registry, private EntityManagerInterface $em)
     {
         parent::__construct($registry, Event::class);
+    }
+
+    public function saveEvent($artist, $hour, $stage, $image)
+    {
+        $newEvent = new Event();
+
+        $newEvent
+            ->setArtist($artist)
+            ->setHour($hour)
+            ->setStage($stage)
+            ->setImage($image);
+
+        $this->em->persist($newEvent);
+        $this->em->flush();
     }
 
     // /**
